@@ -6,7 +6,7 @@
 
 ## Домены
 
-> [!INFO]
+> [!NOTE]
 > Сервисы обозначенные звёздочкой (*) не были полностью проверены на работоспособность.
 
 * GitHub Copilot* - [список lst](https://raw.githubusercontent.com/wavy-cat/cats-allow-lists/refs/heads/master/domain/copilot.lst)
