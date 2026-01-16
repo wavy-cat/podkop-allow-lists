@@ -1,6 +1,6 @@
-# cats-allow-lists
+# podkop-allow-lists
 
-Репозиторий с заблокированными сервисами и подсетями для тех, кому не хватает [allow-domain](https://github.com/itdoginfo/allow-domains)
+Репозиторий с заблокированными сервисами и подсетями
 
 # Сервисы
 
