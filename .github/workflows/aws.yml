@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create directories
-        run: mkdir -p subnets/v4 subnets/v6
+        run: mkdir -p subnets/v4/aws subnets/v6/aws
 
       - name: Fetch and process IP ranges
         run: |
@@ -26,26 +26,25 @@ jobs:
           services=$(jq -r '[.prefixes[].service, .ipv6_prefixes[].service] | unique[]' aws.json)
 
           for service in $services; do
-            # Нормализуем имя файла: нижний регистр, замена спецсимволов на подчёркивание
             filename=$(echo "$service" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '_' | sed 's/_*$//')
 
             jq -r --arg svc "$service" \
               '.prefixes[] | select(.service == $svc) | .ip_prefix' \
-              aws.json | sort -V > "subnets/v4/${filename}.lst"
+              aws.json | sort -V > "subnets/v4/aws/${filename}.lst"
 
             jq -r --arg svc "$service" \
               '.ipv6_prefixes[] | select(.service == $svc) | .ipv6_prefix' \
-              aws.json | sort -V > "subnets/v6/${filename}.lst"
+              aws.json | sort -V > "subnets/v6/aws/${filename}.lst"
           done
 
-          # Сводный список всех IPv4 и IPv6 без дублей
-          jq -r '.prefixes[].ip_prefix' aws.json | sort -Vu > subnets/v4/aws_all.lst
-          jq -r '.ipv6_prefixes[].ipv6_prefix' aws.json | sort -Vu > subnets/v6/aws_all.lst
+          # Сводные списки всех сервисов без дублей
+          jq -r '.prefixes[].ip_prefix' aws.json | sort -Vu > subnets/v4/aws.lst
+          jq -r '.ipv6_prefixes[].ipv6_prefix' aws.json | sort -Vu > subnets/v6/aws.lst
 
           rm aws.json
 
       - name: Remove empty list files
-        run: find subnets/ -name "*.lst" -empty -delete
+        run: find subnets/v4/aws subnets/v6/aws -name "*.lst" -empty -delete
 
       - name: Check for changes and commit
         run: |
