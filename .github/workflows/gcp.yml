@@ -2,7 +2,7 @@ name: Update GCP and Google IPs
 
 on:
   schedule:
-    - cron: '2 15 * * *'
+    - cron: '2 25 * * *'
   workflow_dispatch:
 
 jobs:

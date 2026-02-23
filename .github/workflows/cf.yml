@@ -2,7 +2,7 @@ name: Update Cloudflare IPs
 
 on:
   schedule:
-    - cron: '2 15 * * *'
+    - cron: '2 20 * * *'
   workflow_dispatch:
 
 jobs:

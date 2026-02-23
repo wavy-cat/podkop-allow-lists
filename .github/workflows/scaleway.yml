@@ -2,7 +2,7 @@ name: Update Scaleway IPs
 
 on:
   schedule:
-    - cron: '2 15 * * *'
+    - cron: '2 30 * * *'
   workflow_dispatch:
 
 jobs:
