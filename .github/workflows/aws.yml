@@ -2,7 +2,7 @@ name: Update AWS IPs
 
 on:
   schedule:
-    - cron: '2 15 * * *'
+    - cron: '15 2 * * *'
   workflow_dispatch:
 
 jobs:
