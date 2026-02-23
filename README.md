@@ -1,6 +1,6 @@
 # podkop-allow-lists
 
-Репозиторий с заблокированными сервисами и подсетями
+Репозиторий с проблемными сервисами и подсетями.
 
 # Сервисы
 
@@ -9,21 +9,13 @@
 > [!NOTE]
 > Сервисы обозначенные звёздочкой (*) не были полностью проверены на работоспособность.
 
-* GitHub Copilot* - [список lst](https://raw.githubusercontent.com/wavy-cat/cats-allow-lists/refs/heads/master/domains/copilot.lst)
-* Codecov - [список lst](https://raw.githubusercontent.com/wavy-cat/cats-allow-lists/refs/heads/master/domains/codecov.lst)
+* Codecov - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/domains/codecov.lst)
+* GitHub Copilot* - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/domains/copilot.lst)
 
 ## Подсети
 
-* AWS (Amazon Web Services) - [список lst](https://raw.githubusercontent.com/wavy-cat/cats-allow-lists/refs/heads/master/subnets/aws_v4.lst)
-* GCP (Google Cloud Platform) - [список lst](https://raw.githubusercontent.com/wavy-cat/cats-allow-lists/refs/heads/master/subnets/gcp_v4.lst)
-* Cloudflare - [список lst](https://raw.githubusercontent.com/wavy-cat/cats-allow-lists/refs/heads/master/subnets/cloudflare_v4.lst)
-
-# Установка
-
-## Домены
-
-Включите в настройках Remote Domain Lists, скопируйте необходимые списки lst доменов и вставьте в Remote Domain URLs.
-
-## Подсети
-
-Включите в настройках Remote Subnet Lists, скопируйте необходимые списки lst подсетей и вставьте в Remote Subnet URLs.
+* AWS (Amazon Web Services) - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/subnets/v4/aws.lst)
+* GCP (Google Cloud Platform) - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/subnets/v4/gcp.lst)
+* Cloudflare - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/subnets/v4/cloudflare.lst)
+* Scaleway - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/subnets/v4/scaleway.lst)
+* Vercel - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/subnets/v4/vercel.lst)
