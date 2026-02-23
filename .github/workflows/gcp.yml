@@ -1,0 +1,53 @@
+name: Update GCP and Google IPs
+
+on:
+  schedule:
+    - cron: '2 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-ips:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create directories
+        run: mkdir -p subnets/v4 subnets/v6
+
+      - name: Fetch and process IP ranges
+        run: |
+          # Временное скачивание json-файлов
+          curl -s https://www.gstatic.com/ipranges/goog.json -o goog.json
+          curl -s https://www.gstatic.com/ipranges/cloud.json -o cloud.json
+
+          # Обработка Google IPs
+          jq -r '.prefixes[] | select(.ipv4Prefix != null) | .ipv4Prefix' goog.json | sort -V > subnets/v4/google.lst
+          jq -r '.prefixes[] | select(.ipv6Prefix != null) | .ipv6Prefix' goog.json | sort -V > subnets/v6/google.lst
+
+          # Обработка GCP IPs
+          jq -r '.prefixes[] | select(.ipv4Prefix != null) | .ipv4Prefix' cloud.json | sort -V > subnets/v4/gcp.lst
+          jq -r '.prefixes[] | select(.ipv6Prefix != null) | .ipv6Prefix' cloud.json | sort -V > subnets/v6/gcp.lst
+
+          # Удаляем временные файлы
+          rm goog.json cloud.json
+
+      - name: Check for changes and commit
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # Добавляем только целевые списки
+          git add subnets/
+          
+          # Проверяем, есть ли изменения
+          if git diff --staged --quiet; then
+            echo "Нет изменений в подсетях. Коммит отменен."
+          else
+            git commit -m "chore: update Google and GCP subnets [$(date +'%Y-%m-%d')]"
+            git push
+            echo "Изменения успешно закоммичены."
+          fi

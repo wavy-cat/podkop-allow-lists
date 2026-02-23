@@ -1,0 +1,39 @@
+name: Update Cloudflare IPs
+
+on:
+  schedule:
+    - cron: '2 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-ips:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create directories
+        run: mkdir -p subnets/v4 subnets/v6
+
+      - name: Fetch and process IP ranges
+        run: |
+          curl -s https://www.cloudflare.com/ips-v4 | sort -V > subnets/v4/cloudflare.lst
+          curl -s https://www.cloudflare.com/ips-v6 | sort -V > subnets/v6/cloudflare.lst
+
+      - name: Check for changes and commit
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git add subnets/
+
+          if git diff --staged --quiet; then
+            echo "Нет изменений в подсетях. Коммит отменен."
+          else
+            git commit -m "chore: update Cloudflare subnets [$(date +'%Y-%m-%d')]"
+            git push
+            echo "Изменения успешно закоммичены."
+          fi

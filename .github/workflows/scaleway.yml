@@ -1,0 +1,49 @@
+name: Update Scaleway IPs
+
+on:
+  schedule:
+    - cron: '2 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-ips:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create directories
+        run: mkdir -p subnets/v4 subnets/v6
+
+      - name: Fetch and process IP ranges
+        run: |
+          # Скачиваем префиксы для обоих ASN Scaleway через RIPE Stat API
+          curl -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS12876" -o as12876.json
+          curl -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS29447" -o as29447.json
+
+          # Объединяем и разбиваем по версиям
+          jq -r '.data.prefixes[].prefix' as12876.json as29447.json \
+            | grep -v ':' | sort -Vu > subnets/v4/scaleway.lst
+
+          jq -r '.data.prefixes[].prefix' as12876.json as29447.json \
+            | grep ':' | sort -Vu > subnets/v6/scaleway.lst
+
+          rm as12876.json as29447.json
+
+      - name: Check for changes and commit
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git add subnets/
+
+          if git diff --staged --quiet; then
+            echo "Нет изменений в подсетях. Коммит отменен."
+          else
+            git commit -m "chore: update Scaleway subnets [$(date +'%Y-%m-%d')]"
+            git push
+            echo "Изменения успешно закоммичены."
+          fi
