@@ -20,8 +20,17 @@ jobs:
 
       - name: Fetch and process IP ranges
         run: |
-          curl -s https://www.cloudflare.com/ips-v4 | sort -V > subnets/v4/cloudflare.lst
-          curl -s https://www.cloudflare.com/ips-v6 | sort -V > subnets/v6/cloudflare.lst
+          # Скачиваем префиксы для ASN Cloudflare через RIPE Stat API
+          curl -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS13335" -o as13335.json
+
+          # Разбиваем по версиям
+          jq -r '.data.prefixes[].prefix' as13335.json \
+            | grep -v ':' | sort -Vu > subnets/v4/cloudflare.lst
+
+          jq -r '.data.prefixes[].prefix' as13335.json \
+            | grep ':' | sort -Vu > subnets/v6/cloudflare.lst
+
+          rm as13335.json
 
       - name: Check for changes and commit
         run: |
