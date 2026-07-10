@@ -1,0 +1,71 @@
+name: Update Vercel IPs
+
+on:
+  schedule:
+    - cron: '25 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-ips:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Create directories
+        run: mkdir -p subnets/v4 subnets/v6
+
+      - name: Fetch and process IP ranges
+        run: |
+          # Скачиваем зарегистрированные подсети Vercel по ARIN OrgID ZEITI
+          curl --fail --silent --show-error --location \
+            "https://rdap.arin.net/registry/entity/ZEITI" \
+            -o vercel-rdap.json
+
+          # Разбиваем префиксы по версиям
+          jq -r '
+            .networks[]?
+            | .cidr0_cidrs[]?
+            | select(.v4prefix != null)
+            | "\(.v4prefix)/\(.length)"
+          ' vercel-rdap.json | sort -Vu > vercel-v4.lst
+
+          jq -r '
+            .networks[]?
+            | .cidr0_cidrs[]?
+            | select(.v6prefix != null)
+            | "\(.v6prefix)/\(.length)"
+          ' vercel-rdap.json | sort -Vu > vercel-v6.lst
+
+          if [ ! -s vercel-v4.lst ]; then
+            echo "ARIN RDAP не вернул IPv4-подсети Vercel."
+            exit 1
+          fi
+
+          mv vercel-v4.lst subnets/v4/vercel.lst
+
+          if [ -s vercel-v6.lst ]; then
+            mv vercel-v6.lst subnets/v6/vercel.lst
+          else
+            rm -f vercel-v6.lst subnets/v6/vercel.lst
+          fi
+
+          rm vercel-rdap.json
+
+      - name: Check for changes and commit
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git add subnets/
+
+          if git diff --staged --quiet; then
+            echo "Нет изменений в подсетях. Коммит отменен."
+          else
+            git commit -m "chore(subnets): update Vercel subnets [$(date +'%Y-%m-%d')]"
+            git push
+            echo "Изменения успешно закоммичены."
+          fi
