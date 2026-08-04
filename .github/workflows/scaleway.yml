@@ -2,7 +2,7 @@ name: Update Scaleway IPs
 
 on:
   schedule:
-    - cron: '30 2 * * *'
+    - cron: '35 2 * * *'
   workflow_dispatch:
 
 jobs:
@@ -21,8 +21,8 @@ jobs:
       - name: Fetch and process IP ranges
         run: |
           # Скачиваем префиксы для обоих ASN Scaleway через RIPE Stat API
-          curl -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS12876" -o as12876.json
-          curl -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS29447" -o as29447.json
+          curl --fail --silent --show-error -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS12876" -o as12876.json
+          curl --fail --silent --show-error -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS29447" -o as29447.json
 
           # Объединяем и разбиваем по версиям
           jq -r '.data.prefixes[].prefix' as12876.json as29447.json \
