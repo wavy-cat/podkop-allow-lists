@@ -25,10 +25,10 @@ jobs:
 
           # Объединяем и разбиваем по версиям
           jq -r '.data.prefixes[].prefix' as54113.json \
-            | grep -v ':' | sort -Vu > subnets/v4/scaleway.lst
+            | grep -v ':' | sort -Vu > subnets/v4/fastly.lst
 
           jq -r '.data.prefixes[].prefix' as54113.json \
-            | grep ':' | sort -Vu > subnets/v6/scaleway.lst
+            | grep ':' | sort -Vu > subnets/v6/fastly.lst
 
           rm as54113.json
 
