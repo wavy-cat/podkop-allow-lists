@@ -27,8 +27,12 @@ jobs:
           jq -r '.data.prefixes[].prefix' as54113.json \
             | grep -v ':' | sort -Vu > subnets/v4/fastly.lst
 
+          python3 optimize_subnets.py subnets/v4/fastly.lst
+
           jq -r '.data.prefixes[].prefix' as54113.json \
             | grep ':' | sort -Vu > subnets/v6/fastly.lst
+
+          python3 optimize_subnets.py subnets/v6/fastly.lst
 
           rm as54113.json
 

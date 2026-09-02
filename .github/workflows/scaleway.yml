@@ -28,8 +28,12 @@ jobs:
           jq -r '.data.prefixes[].prefix' as12876.json as29447.json \
             | grep -v ':' | sort -Vu > subnets/v4/scaleway.lst
 
+          python3 optimize_subnets.py subnets/v4/scaleway.lst
+
           jq -r '.data.prefixes[].prefix' as12876.json as29447.json \
             | grep ':' | sort -Vu > subnets/v6/scaleway.lst
+
+          python3 optimize_subnets.py subnets/v6/scaleway.lst
 
           rm as12876.json as29447.json
 
