@@ -14,3 +14,4 @@
 
 * Scaleway - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/subnets/v4/scaleway.lst)
 * Vercel - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/subnets/v4/vercel.lst)
+* Fastly - [список lst](https://raw.githubusercontent.com/wavy-cat/podkop-allow-lists/refs/heads/master/subnets/v4/fastly.lst)
