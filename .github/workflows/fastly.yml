@@ -42,7 +42,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "Нет изменений в подсетях. Коммит отменен."
           else
-            git commit -m "chore: update Scaleway subnets [$(date +'%Y-%m-%d')]"
+            git commit -m "chore: update Fastly subnets [$(date +'%Y-%m-%d')]"
             git push
             echo "Изменения успешно закоммичены."
           fi
