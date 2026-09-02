@@ -49,11 +49,11 @@ jobs:
 
           ls -la
           cat vercel-v4.lst
-          python3 optimize_subnets.py vercel-v4.lst > vercel-v4.lst
+          python3 optimize_subnets.py vercel-v4.lst
           mv vercel-v4.lst subnets/v4/vercel.lst
 
           if [ -s vercel-v6.lst ]; then
-            python3 optimize_subnets.py vercel-v6.lst > vercel-v6.lst
+            python3 optimize_subnets.py vercel-v6.lst
             mv vercel-v6.lst subnets/v6/vercel.lst
           else
             rm -f vercel-v6.lst subnets/v6/vercel.lst

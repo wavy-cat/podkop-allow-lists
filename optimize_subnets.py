@@ -55,8 +55,9 @@ def main():
     collapsed = list(ipaddress.collapse_addresses(networks))
     collapsed.sort()
 
-    for net in collapsed:
-        print(net)
+    with open(input_path, "w", encoding="utf-8") as f:
+        for net in collapsed:
+            f.write(str(net) + "\n")
 
 
 if __name__ == "__main__":
