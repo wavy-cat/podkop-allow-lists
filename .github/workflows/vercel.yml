@@ -47,6 +47,8 @@ jobs:
             exit 1
           fi
 
+          ls -la
+          cat vercel-v4.lst
           python3 optimize_subnets.py vercel-v4.lst > vercel-v4.lst
           mv vercel-v4.lst subnets/v4/vercel.lst
 
