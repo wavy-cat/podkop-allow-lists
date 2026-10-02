@@ -15,9 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Create directories
-        run: mkdir -p subnets/v4 subnets/v6
-
       - name: Fetch and process IP ranges
         run: |
           # Скачиваем зарегистрированные подсети Vercel по ARIN OrgID ZEITI
