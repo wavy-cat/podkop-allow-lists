@@ -17,22 +17,22 @@ jobs:
 
       - name: Fetch and process IP ranges
         run: |
-          # Скачиваем префиксы для обоих ASN Scaleway через RIPE Stat API
-          curl --fail --silent --show-error -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS12876" -o as12876.json
-          curl --fail --silent --show-error -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS29447" -o as29447.json
+          # Скачиваем страницу с информацией о сети Scaleway
+          curl --fail --silent --show-error "https://www.scaleway.com/en/docs/account/support/scaleway-network-information.md" -o scaleway.md
 
-          # Объединяем и разбиваем по версиям
-          jq -r '.data.prefixes[].prefix' as12876.json as29447.json \
-            | grep -v ':' | sort -Vu > subnets/v4/scaleway.lst
+          # Извлекаем адреса ТОЛЬКО из раздела "## IP ranges used by Scaleway"
+          # (от заголовка раздела до следующего заголовка уровня "## ").
+          awk '/^## IP ranges used by Scaleway/{f=1; next} f && /^## /{exit} f' scaleway.md \
+            | grep -oE '[0-9a-fA-F:.]+/[0-9]+' > ranges.txt
 
+          # Разбиваем по версиям
+          grep -v ':' ranges.txt | sort -Vu > subnets/v4/scaleway.lst
           python3 optimize_subnets.py subnets/v4/scaleway.lst
 
-          jq -r '.data.prefixes[].prefix' as12876.json as29447.json \
-            | grep ':' | sort -Vu > subnets/v6/scaleway.lst
-
+          grep ':' ranges.txt | sort -Vu > subnets/v6/scaleway.lst
           python3 optimize_subnets.py subnets/v6/scaleway.lst
 
-          rm as12876.json as29447.json
+          rm scaleway.md ranges.txt
 
       - name: Check for changes and commit
         run: |
