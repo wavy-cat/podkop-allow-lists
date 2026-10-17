@@ -26,10 +26,8 @@ jobs:
 
           python3 optimize_subnets.py subnets/v4/railway.lst
 
-          jq -r '.data.prefixes[].prefix' as400940.json \
-            | grep ':' | sort -Vu > subnets/v6/railway.lst
-
-          python3 optimize_subnets.py subnets/v6/railway.lst
+          # Railway использует IPv6 только для исходящих подключений,
+          # поэтому не создаём файл с IPv6.
 
           rm as400940.json
 
